@@ -10,31 +10,38 @@ description: >-
   Protocol (MCP) interoperability with Claude and other MCP-compatible tools and integrates with common GTM
   systems (CRM, email, the wider revenue stack). It is used by revenue teams at Snowflake, Uber, Rippling,
   GitLab, Figma, and BMC. Mutiny has raised $72M from Sequoia Capital, Insight Partners, Tiger Global,
-  Cowboy Ventures, and Y Combinator. Note: Mutiny publishes no public REST API, OpenAPI, or developer
-  portal at this time — this profile captures its identity, provider-authored LLM information, and probed
-  security posture. (Its earlier website-personalization / A/B-testing product has been retired.)
+  Cowboy Ventures, and Y Combinator. Mutiny's machine-callable surface is a first-party hosted, remote
+  Model Context Protocol server at https://mcp.mutinyhq.com/mcp, protected by OAuth 2.1 with PKCE and
+  dynamic client registration and publishing five scopes covering asset creation, publication, and
+  content-library management. There is no public REST API, no OpenAPI, no GraphQL endpoint, and no
+  developer portal — MCP is the whole contract. (Its earlier website-personalization / A/B-testing
+  product has been retired, along with the React SDK that served it.)
 url: https://raw.githubusercontent.com/api-evangelist/mutiny/refs/heads/main/apis.yml
 x-type: company
 x-source: vc-portfolio
 x-backed-by:
 - cowboy-ventures
 - uncork-capital
-x-tier: stub
-x-tier-reason: portfolio-lead
+x-tier: enriched
+x-tier-reason: >-
+  Promoted from stub on 2026-08-13: contract discovery found a live first-party remote MCP server at
+  mcp.mutinyhq.com with RFC 8414 / RFC 9728 discovery documents and five published OAuth scopes.
 accessModel:
-  pricing: unknown
-  onboarding: unknown
+  pricing: freemium
+  onboarding: open
   trial: false
-  try_now: false
-  public: false
-  label: Unknown
-  confidence: low
-  source: []
-  generated: '2026-07-22'
+  try_now: true
+  public: true
+  label: Freemium · Open access
+  confidence: high
+  source:
+  - plans
+  - authentication
+  generated: '2026-08-13'
   method: derived
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-20'
+modified: '2026-08-13'
 image: https://framerusercontent.com/assets/Ec1hAhKLtluxlMfLydNP0NTrIA.png
 tags:
 - Company
@@ -47,7 +54,40 @@ tags:
 - Sales Enablement
 - Account Based Marketing
 - Workflow Automation
-apis: []
+- Model Context Protocol
+apis:
+- aid: mutiny:mutiny-mcp-server
+  name: Mutiny MCP Server
+  description: >-
+    Mutiny's first-party hosted, remote Model Context Protocol server — the company's only
+    machine-callable surface. It lets an MCP-compatible assistant (Claude web, Claude Desktop, Claude
+    Code, ChatGPT) create Mutiny customer-facing assets from templates and conversation context,
+    iterate on them, publish them to a live shareable URL, and search, upload and tag items in the
+    workspace content library. Transport is streamable HTTP, stateless POST only; authorization is
+    OAuth 2.1 authorization-code with mandatory PKCE (S256) and RFC 7591 dynamic client registration,
+    across five published scopes. The live tools/list manifest is auth-gated.
+  humanURL: https://help.mutinyhq.com/articles/5003451538-connecting-mutiny-to-claude
+  baseURL: https://mcp.mutinyhq.com/mcp
+  tags:
+  - Model Context Protocol
+  - AI Agents
+  - Sales Enablement
+  - Content Generation
+  properties:
+  - type: MCPServer
+    url: mcp/mutiny-mcp.yml
+  - type: Authentication
+    url: authentication/mutiny-authentication.yml
+  - type: OAuthScopes
+    url: scopes/mutiny-scopes.yml
+  - type: ErrorCatalog
+    url: errors/mutiny-problem-types.yml
+  - type: Conventions
+    url: conventions/mutiny-conventions.yml
+  - type: RateLimits
+    url: rate-limits/mutiny-rate-limits.yml
+  - type: Documentation
+    url: https://help.mutinyhq.com/articles/5003451538-connecting-mutiny-to-claude
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
@@ -62,8 +102,32 @@ common:
   url: well-known/mutiny-well-known.yml
 - type: DomainSecurity
   url: security/mutiny-domain-security.yml
+- type: MCPServer
+  url: mcp/mutiny-mcp.yml
+- type: Authentication
+  url: authentication/mutiny-authentication.yml
+- type: OAuthScopes
+  url: scopes/mutiny-scopes.yml
+- type: Conformance
+  url: conformance/mutiny-conformance.yml
+- type: Compliance
+  url: conformance/mutiny-conformance.yml
+- type: Conventions
+  url: conventions/mutiny-conventions.yml
+- type: ErrorCatalog
+  url: errors/mutiny-problem-types.yml
+- type: Lifecycle
+  url: lifecycle/mutiny-lifecycle.yml
+- type: Plans
+  url: plans/mutiny-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/mutiny-rate-limits.yml
+- type: Packages
+  url: packages/mutiny-packages.yml
 - type: Documentation
   url: https://help.mutinyhq.com
+- type: GettingStarted
+  url: https://help.mutinyhq.com/articles/5003451538-connecting-mutiny-to-claude
 - type: Support
   url: https://help.mutinyhq.com
 - type: Blog
@@ -83,7 +147,7 @@ common:
 - type: LinkedIn
   url: https://www.linkedin.com/company/mutinyhq
 x-enrichment:
-  date: '2026-07-20'
+  date: '2026-08-13'
   status: enriched
-  artifacts_added: 3
+  artifacts_added: 12
   pass: local-v1
