@@ -1,13 +1,28 @@
-generated: '2026-07-20'
+generated: '2026-08-13'
 method: probed
 source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
 hosts:
 - host: www.mutinyhq.com
   https: true
   tls_version: TLSv1.3
-  cert_expires: Sep  1 22:06:12 2026 GMT
+  cert_expires: Oct 24 09:30:55 2026 GMT
   hsts: true
   hsts_max_age: 31536000
+- host: mcp.mutinyhq.com
+  https: true
+  tls_version: TLSv1.3
+  hsts: false
+  note: >-
+    The MCP server host returns no Strict-Transport-Security header on any response (checked 2026-08-13
+    on GET and POST /mcp). It does set a Content-Security-Policy of "default-src 'self'; connect-src
+    'self' https://*.mutinyhq.com". This is the host that carries every authenticated agent call.
+- host: status.mutinyhq.com
+  https: false
+  tls_error: certificate name mismatch
+  note: >-
+    CNAMEs to Atlassian Statuspage (2c8f8lzxjbxr.stspg-customer.com) but presents CN=*.statuspage.io,
+    which does not cover status.mutinyhq.com — TLS validation fails for every conforming client. See
+    lifecycle/mutiny-lifecycle.yml.
 domains:
 - domain: mutinyhq.com
   dnssec: false

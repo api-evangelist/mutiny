@@ -1,0 +1,47 @@
+generated: '2026-08-13'
+method: searched
+source: https://www.mutinyhq.com/pricing
+summary: >-
+  Mutiny publishes plan-level usage quotas denominated in credits, but no HTTP rate limits and no
+  runtime rate-limit signalling. An agent integrating over MCP has a published monthly budget and no
+  way to observe how much of it is left.
+limit_count: 3
+limits:
+- scope: per-seat
+  plan: Free
+  window: day
+  limit: 5
+  unit: credit
+  secondary:
+    window: month
+    limit: 30
+    unit: credit
+  source: https://www.mutinyhq.com/pricing
+- scope: per-account
+  plan: Business
+  window: month
+  limit: 50
+  unit: credit
+  source: https://www.mutinyhq.com/pricing
+- scope: per-user
+  plan: Enterprise
+  window: month
+  limit: custom
+  unit: credit
+  note: 'Pricing page: "custom credit limits per user" with volume discounts. No number is published.'
+  source: https://www.mutinyhq.com/pricing
+concurrency_limits: []
+headers:
+  published: []
+  observed: []
+  note: >-
+    No X-RateLimit-*, RateLimit-* or Retry-After header was returned by any anonymous response from
+    https://mcp.mutinyhq.com/mcp (401), https://api.mutinyhq.com/ (200) or www.mutinyhq.com. Mutiny
+    documents no rate-limit response headers anywhere. Because credits are the real constraint and
+    nothing exposes remaining balance at runtime, an MCP client cannot detect approaching exhaustion —
+    it can only fail.
+exhaustion:
+  status_code: unknown
+  body: unknown
+  note: Not documented, and not observable without an authenticated token.
+checked: '2026-08-13'

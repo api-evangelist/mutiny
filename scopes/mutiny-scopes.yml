@@ -1,0 +1,54 @@
+generated: '2026-08-13'
+method: probed
+source: https://mcp.mutinyhq.com/.well-known/oauth-authorization-server
+docs: https://help.mutinyhq.com/articles/5003451538-connecting-mutiny-to-claude
+api: Mutiny MCP Server
+authorization_server: https://mcp.mutinyhq.com
+protected_resource: https://mcp.mutinyhq.com
+flows:
+- type: authorization_code
+  authorization_endpoint: https://mcp.mutinyhq.com/oauth/authorize
+  token_endpoint: https://mcp.mutinyhq.com/oauth/token
+  pkce: S256
+scope_count: 5
+scopes:
+- name: read_asset_groups
+  description: >-
+    Read the caller's Mutiny asset groups — the deal rooms, landing pages, decks, proposals and other
+    customer-facing assets in the workspace. Mutiny's own connector consent screen renders this as
+    "Read assets".
+  consent_label: Read assets
+  access: read
+- name: create_asset_groups
+  description: >-
+    Create new Mutiny asset groups and iterate on them (generate a page/deck/proposal from a template
+    plus conversation context, then revise sections or headlines). Consent screen: "Create assets".
+  consent_label: Create assets
+  access: write
+- name: publish_asset_groups
+  description: >-
+    Publish an asset group to production and return a live, shareable URL. This is the scope that makes
+    an agent's output externally visible to a prospect, so it is the highest-consequence scope in the
+    set. Consent screen: "Publish assets".
+  consent_label: Publish assets
+  access: write
+- name: read_library_content
+  description: >-
+    Search and list the workspace content library — logos, images, case studies and other reusable brand
+    assets, including filtering by tag. Consent screen: "Read library content".
+  consent_label: Read library content
+  access: read
+- name: manage_library_content
+  description: >-
+    Upload items into the content library from a URL and manage their organisation, including tagging
+    library items. Consent screen: "Manage library content".
+  consent_label: Manage library content
+  access: write
+notes: >-
+  The five scope strings are read verbatim from Mutiny's RFC 8414 authorization-server metadata and are
+  repeated identically in its RFC 9728 protected-resource metadata (both saved under well-known/). The
+  human-readable consent labels are quoted from the Mutiny help-centre article on connecting Mutiny to
+  Claude. Mutiny publishes no separate scopes/permissions reference page, so the descriptions above
+  restate what each scope name plus the documented MCP capabilities cover; no scope is invented, and no
+  scope beyond these five is claimed. There is no default/implicit scope and no refresh_token grant
+  advertised — the metadata declares grant_types_supported: [authorization_code] only.

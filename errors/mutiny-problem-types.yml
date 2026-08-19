@@ -1,0 +1,71 @@
+generated: '2026-08-13'
+method: probed
+source: live anonymous requests to https://mcp.mutinyhq.com/mcp and https://api.mutinyhq.com/
+format: jsonrpc-2.0
+rfc9457: false
+envelope:
+  content_type: application/json; charset=utf-8
+  shape: '{"jsonrpc":"2.0","error":{"code":<integer>,"message":"<string>"},"id":<request id or null>}'
+  note: >-
+    Mutiny publishes no error reference. Every entry below was observed on a live anonymous request on
+    2026-08-13; nothing is inferred from documentation, because none exists.
+error_count: 5
+errors:
+- code: -32001
+  http_status: 401
+  message: Authentication failed.
+  type: jsonrpc
+  trigger: POST /mcp with any method (tools/list, initialize) and no bearer token
+  meaning: >-
+    The caller presented no valid OAuth access token for the MCP server. This is the response every
+    unauthenticated agent sees, and it is the gate behind which the real tool manifest sits.
+  remediation: >-
+    Complete the OAuth 2.1 authorization-code + PKCE flow against https://mcp.mutinyhq.com/oauth/authorize
+    and present the resulting access token. Register the client first at /oauth/register if needed.
+  gap: >-
+    The response carries no WWW-Authenticate header, so the client is not pointed at the
+    protected-resource metadata that RFC 9728 exists to advertise. `id` is returned as null rather than
+    echoing the request id, so the failure cannot be correlated to a specific request in a batch.
+  observed: '2026-08-13'
+- code: -32000
+  http_status: 405
+  message: Server-initiated streaming is not supported. Use POST /mcp for stateless requests.
+  type: jsonrpc
+  trigger: GET https://mcp.mutinyhq.com/mcp
+  meaning: The server implements the stateless streamable-HTTP transport only; SSE is not offered.
+  remediation: Use POST for all MCP traffic. Do not open an SSE stream; /sse returns 404.
+  observed: '2026-08-13'
+- code: null
+  http_status: 404
+  message: 'Route GET:/ not found'
+  type: http
+  trigger: GET https://mcp.mutinyhq.com/
+  meaning: >-
+    Fastify-style route-not-found envelope ({"message","error","statusCode"}) — a different error shape
+    from the JSON-RPC envelope used on /mcp. A client sees two incompatible error formats on one host
+    depending on the path.
+  remediation: Call /mcp, not the host root.
+  observed: '2026-08-13'
+- code: null
+  http_status: 401
+  message: 'Every path on app.mutinyhq.com returns 401'
+  type: http
+  trigger: any anonymous request to https://app.mutinyhq.com/*
+  meaning: The hosted application serves nothing anonymously, including /.well-known/* paths.
+  remediation: Not a developer surface. Use the MCP server.
+  observed: '2026-08-13'
+- code: null
+  http_status: 404
+  message: HTML 404 page
+  type: http
+  trigger: any path other than / on https://api.mutinyhq.com
+  meaning: >-
+    api.mutinyhq.com resolves and answers GET / with a 2-byte text/plain body, but returns an HTML 404
+    for every documented API-discovery path. It is not a public API host.
+  remediation: none — no public REST API exists.
+  observed: '2026-08-13'
+notes: >-
+  Only two of these are true protocol errors with codes (-32001, -32000); the rest are transport-level
+  responses recorded so the surface's real failure modes are documented. Mutiny publishes no error code
+  registry, no decline codes (not a payments provider) and no problem-type catalogue.
+checked: '2026-08-13'

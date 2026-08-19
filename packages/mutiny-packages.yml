@@ -1,0 +1,85 @@
+generated: '2026-08-13'
+method: searched
+source: >-
+  https://registry.npmjs.org/@mutinyhq%2Freact-sdk, https://api.github.com/orgs/MutinyHQ/repos,
+  https://github.com/MutinyHQ/homebrew-tap
+summary: >-
+  Mutiny ships no client library for the surface it currently sells. The only first-party SDK on any
+  public registry, @mutinyhq/react-sdk, was published for the retired website-personalization product
+  and has not shipped a release since March 2023; its source repository is gone. The MCP server that
+  replaced that surface has no package at all — it is reached by URL, not by import.
+package_count: 2
+packages:
+- name: '@mutinyhq/react-sdk'
+  language: javascript
+  registry: npm
+  registry_url: https://www.npmjs.com/package/@mutinyhq/react-sdk
+  official: true
+  version: 0.1.2
+  published: '2023-03-27'
+  first_published: '2023-03-17'
+  release_count: 3
+  license: MIT
+  repository: https://github.com/MutinyHQ/web-sdks
+  repository_status: '404 — the repository named in package.json no longer exists under the MutinyHQ org'
+  description: React SDK for integrating with Mutiny
+  covers: legacy website personalization / experimentation product
+  status: abandoned
+  note: >-
+    Three releases, all in a ten-day window in March 2023, then nothing for over three years. Mutiny's
+    own /llm-info page tells assistants not to describe Mutiny as a website-personalization or A/B
+    testing product because "that was the company's earlier product" — this package is the SDK for that
+    product, still installable from npm with no deprecation flag, no README pointer to a successor, and
+    a dead source repository. It wraps nothing Mutiny currently sells.
+- name: mdiff
+  language: rust
+  registry: homebrew
+  registry_url: https://github.com/MutinyHQ/homebrew-tap
+  install: brew install MutinyHQ/tap/mdiff
+  official: true
+  version: v0.1.19
+  published: '2026-03-23'
+  release_count: 19
+  license: MIT
+  repository: https://github.com/MutinyHQ/mdiff
+  description: CLI utility for git diff viewing with coding agent workflows
+  covers: internal engineering tooling
+  status: active
+  api_client: false
+  note: >-
+    Actively maintained and genuinely first-party (19 releases, last pushed 2026-03-31), but it is a
+    git-diff viewer for coding-agent workflows — it does not call any Mutiny API or the Mutiny MCP
+    server. Distributed only through Mutiny's own Homebrew tap; the `mdiff` crate on crates.io
+    (0.1.1, 2019) is an unrelated third-party package. Recorded for completeness, not counted as an SDK.
+mcp_package:
+  exists: false
+  note: >-
+    No stdio MCP package exists under any @mutinyhq npm scope, on PyPI, or in Mutiny's GitHub org. The
+    Mutiny MCP server is remote-only — clients connect to https://mcp.mutinyhq.com/mcp over HTTP with
+    OAuth, so there is nothing to install.
+registries_checked:
+- registry: npm
+  query: '@mutinyhq scope + text search "mutinyhq"'
+  result: 1 package (@mutinyhq/react-sdk)
+- registry: npm
+  query: mutiny
+  result: 'unrelated third-party package (Thorsten Lorenz, 2014) — not Mutiny'
+- registry: pypi
+  query: mutiny, mutinyhq, mutiny-sdk
+  result: >-
+    unrelated third-party packages (a Revolt API wrapper and an unofficial Midjourney SDK); mutinyhq is
+    404. No first-party Python package.
+- registry: crates.io
+  query: mdiff
+  result: unrelated 2019 package by a different author
+- registry: rubygems
+  query: mutiny
+  result: no first-party package
+sdk_count: 0
+sdk_count_note: >-
+  Deliberately zero. @mutinyhq/react-sdk is a real, official, first-party SDK, but it targets a product
+  Mutiny has publicly retired and has had no release in over three years, so no SDKs pointer is emitted
+  in apis.yml — counting it would credit Mutiny with client-library support for an API it does not
+  ship. This is the strongest decay evidence in the profile precisely because it is provider-published
+  and reliably dated.
+checked: '2026-08-13'

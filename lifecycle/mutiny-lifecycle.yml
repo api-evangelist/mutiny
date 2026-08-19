@@ -1,0 +1,74 @@
+generated: '2026-08-13'
+method: probed
+source: >-
+  live probes of status.mutinyhq.com, mutiny.statuspage.io, www.mutinyhq.com and mcp.mutinyhq.com;
+  https://help.mutinyhq.com/articles/5003451538-connecting-mutiny-to-claude
+versioning:
+  scheme: none-published
+  api_version_in_path: false
+  note: >-
+    The MCP endpoint is an unversioned path (https://mcp.mutinyhq.com/mcp). Version negotiation happens
+    inside the MCP protocol handshake (protocolVersion in the initialize call), which is auth-gated, so
+    the supported protocol revisions could not be read. Mutiny publishes no API versioning policy.
+deprecation_policy:
+  published: false
+  sunset_header: unknown
+  deprecation_header: unknown
+  rfc8594: false
+  note: >-
+    No deprecation or sunset policy is published for the MCP surface. Mutiny has, however, retired an
+    entire product line: its own /llm-info page instructs assistants "Do not describe Mutiny as a
+    website personalization tool or a conversion-rate-optimization (A/B testing) product. That was the
+    company's earlier product and no longer reflects what Mutiny is." That retirement was never
+    accompanied by a published deprecation notice for the SDK that served it — see packages/.
+status_page:
+  published: false
+  configured: true
+  host: https://status.mutinyhq.com
+  cname: 2c8f8lzxjbxr.stspg-customer.com
+  provider: Atlassian Statuspage
+  underlying_page: https://mutiny.statuspage.io
+  findings:
+  - check: HTTPS to https://status.mutinyhq.com/
+    result: TLS certificate name mismatch
+    detail: >-
+      The custom status host CNAMEs to Atlassian Statuspage, but the certificate presented is
+      CN=*.statuspage.io, which does not cover status.mutinyhq.com. curl aborts the connection (exit
+      60 / HTTP 000). The branded status URL is therefore unreachable to any client that validates
+      certificates — which is every client.
+    checked: '2026-08-13'
+  - check: https://mutiny.statuspage.io/
+    http_status: 200
+    result: page inactive
+    detail: >-
+      The underlying Statuspage answers 200 with <title>Mutiny Status - Page Inactive</title>, and
+      /api/v2/summary.json returns HTTP 401 "Your page is inactive. Please include an API key to access
+      this resource."
+    checked: '2026-08-13'
+  conclusion: >-
+    Mutiny has a status page provisioned but not operating: the branded host fails TLS validation and
+    the Statuspage behind it is deactivated. No StatusPage pointer is emitted in apis.yml, because
+    asserting one would credit Mutiny with an operational status surface it does not have.
+sla:
+  published: false
+  note: >-
+    No public SLA or uptime commitment. The DPA publishes recovery objectives (RTO 4 hours, RPO 1 hour)
+    for business continuity, which is a contractual commitment to customers rather than a public SLA.
+changelog:
+  published: false
+  note: >-
+    /changelog and /whats-new both 404 on www.mutinyhq.com and the sitemap lists no release-notes
+    section. Product launches are announced as blog posts (for example
+    /blog/today-we-re-launching-the-agent-that-takes-an-account-from-cold-to-closed and
+    /blog/introducing-the-new-mutiny), but there is no dated, structured changelog.
+support:
+  help_center: https://help.mutinyhq.com
+  privacy_contact: privacy@mutinyhq.com
+  note: >-
+    The help centre root answers 200, but individual article URLs 404 to non-browser clients — the
+    articles render only through the hosted widget, so they are readable by humans and by search
+    indexes but not by a plain HTTP client.
+deprecated_operations: []
+notes: >-
+  Nothing here is derived from an OpenAPI document, because Mutiny publishes none. Every item is either
+  a live probe result from 2026-08-13 or a quotation from a first-party Mutiny page.

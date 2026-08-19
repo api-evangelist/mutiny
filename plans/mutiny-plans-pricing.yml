@@ -1,0 +1,82 @@
+generated: '2026-08-13'
+method: searched
+source: https://www.mutinyhq.com/pricing
+currency: USD
+unit: credit
+unit_note: >-
+  Mutiny meters work in "credits" rather than API calls. The pricing page does not define what one
+  credit buys, and no credit-to-operation conversion is published.
+plan_count: 3
+plans:
+- name: Free
+  price: 0
+  currency: USD
+  billing_period: month
+  seats: Up to 5 team members
+  included_quota: 5 daily credits per seat, up to 30 per month
+  overage: not published
+  limits:
+    templates: 5
+    routines_per_user: 5
+    projects_per_user: 5
+    library: unlimited
+    integrations: unlimited for 30 days
+    skills: unlimited
+    domain: mutiny.app subdomain
+  includes:
+  - Custom template skills
+  - Asset analytics
+  - Training video access
+- name: Business
+  price: 50
+  currency: USD
+  billing_period: month
+  seats: Unlimited team members
+  included_quota: 50 credits per month
+  overage: not published
+  limits:
+    templates: unlimited
+    skills: unlimited
+    integrations: unlimited
+    routines_per_user: 20
+    projects_per_user: 20
+    domain: custom subdomain
+  includes:
+  - Everything in Free
+  - Visitor Intelligence analytics for Outreach and Salesloft
+  - Password protection for assets
+- name: Enterprise
+  price: 40000
+  price_note: Starting at $40,000/year
+  currency: USD
+  billing_period: year
+  seats: Unlimited team members
+  included_quota: Custom credit limits per user, with volume discounts for credits
+  overage: negotiated
+  limits:
+    templates: unlimited
+    routines: unlimited
+    projects: unlimited
+    integrations: unlimited
+  includes:
+  - Everything in Business
+  - SSO
+  - Custom MSA and DPA terms
+  - Dedicated Growth Strategist
+  - Onboarding support
+  - Salesforce integration
+api_access:
+  gated: false
+  note: >-
+    The pricing page does not mention API access, the MCP server, or MCP credits at any tier. Nothing
+    on the page states that the MCP connector requires a paid plan, and nothing states it is included —
+    the relationship between MCP usage and the credit meter is undocumented. This matters: an agent
+    calling the MCP server is presumably spending credits, and neither the pricing page nor the help
+    centre says how many.
+discrepancy:
+  note: >-
+    Mutiny's own /llm-info page states "Free, Business, and Enterprise custom plans (starting at $30k)"
+    while the pricing page probed on 2026-08-13 states Enterprise starts at $40,000/year. The pricing
+    page is treated as authoritative and the llm-info figure is recorded as stale — a live example of a
+    provider-authored LLM document drifting out of sync with the page it summarises.
+checked: '2026-08-13'

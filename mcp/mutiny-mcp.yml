@@ -1,0 +1,103 @@
+generated: '2026-08-13'
+method: probed
+status: published
+source: https://help.mutinyhq.com/articles/5003451538-connecting-mutiny-to-claude
+server:
+  name: mutiny
+  description: >-
+    Mutiny ships a first-party hosted, remote MCP server so any MCP-compatible assistant (Claude web,
+    Claude Desktop, Claude Code, ChatGPT) can create and publish Mutiny customer-facing assets, browse
+    templates and manage the Mutiny content library from inside a conversation.
+  transport: http
+  protocol_note: >-
+    Streamable HTTP, stateless. GET /mcp returns JSON-RPC error -32000 "Server-initiated streaming is
+    not supported. Use POST /mcp for stateless requests." — the server does not implement the SSE
+    transport, and /sse 404s.
+  url: https://mcp.mutinyhq.com/mcp
+  auth:
+    type: oauth2
+    profile: OAuth 2.1 (MCP authorization)
+    grant_types:
+    - authorization_code
+    pkce: S256
+    dynamic_client_registration: true
+    issuer: https://mcp.mutinyhq.com
+    authorization_endpoint: https://mcp.mutinyhq.com/oauth/authorize
+    token_endpoint: https://mcp.mutinyhq.com/oauth/token
+    registration_endpoint: https://mcp.mutinyhq.com/oauth/register
+    token_endpoint_auth_methods_supported:
+    - client_secret_post
+    - none
+    authorization_server_metadata: https://mcp.mutinyhq.com/.well-known/oauth-authorization-server
+    protected_resource_metadata: https://mcp.mutinyhq.com/.well-known/oauth-protected-resource
+    scopes:
+    - read_asset_groups
+    - create_asset_groups
+    - publish_asset_groups
+    - read_library_content
+    - manage_library_content
+  setup:
+    claude_web: 'Settings -> Customize -> Connectors -> Add custom connector; name "Mutiny", server URL
+      https://mcp.mutinyhq.com/mcp; authorize in the browser window that opens.'
+    claude_desktop: 'Settings -> Customize -> Connectors -> Add custom connector; same name and URL;
+      complete the OAuth authorization in the browser.'
+    claude_code: claude mcp add --transport http mutiny https://mcp.mutinyhq.com/mcp
+tools: []
+tools_status: auth-gated
+capabilities:
+- capability: create assets
+  documented_as: >-
+    "Create a call-followup page using my call follow-up template"; "Build a 1:1 landing page for
+    Stripe" — the assistant builds a Mutiny asset from a template plus conversation context.
+  likely_scope: create_asset_groups
+- capability: iterate on an asset
+  documented_as: >-
+    "Update the headline to focus on their cloud migration initiative"; "Make the opening section
+    shorter".
+  likely_scope: create_asset_groups
+- capability: publish an asset
+  documented_as: >-
+    "When the asset is ready, ask your AI assistant to publish it. It will push the asset to production
+    and return a live, shareable URL you can send to a prospect or drop into your CRM."
+  likely_scope: publish_asset_groups
+- capability: browse templates and existing assets
+  documented_as: '"What templates are available?"; "Show me my Mutiny assets".'
+  likely_scope: read_asset_groups
+- capability: search the content library
+  documented_as: '"Show me what''s in my content library"; "Show me all library items tagged ''enterprise''".'
+  likely_scope: read_library_content
+- capability: upload and tag library items
+  documented_as: >-
+    Provide a URL to upload an item such as a logo; "Tag my Snowflake case study with 'data-cloud' and
+    'enterprise'".
+  likely_scope: manage_library_content
+limitations:
+- 'Blueprints from the Mutiny app are not accessible through MCP; the documented workaround is to save
+  the structure as a template in Mutiny first.'
+probe:
+  checked: '2026-08-13'
+  endpoint: https://mcp.mutinyhq.com/mcp
+  method: POST
+  request: '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'
+  http_status: 401
+  response: '{"jsonrpc":"2.0","error":{"code":-32001,"message":"Authentication failed."},"id":null}'
+  www_authenticate: not sent (the server returns a JSON-RPC error body rather than an RFC 9728 challenge header)
+notes: >-
+  The endpoint, transport, OAuth profile and the five scopes are PROBED facts read from the live server
+  and its RFC 8414 / RFC 9728 discovery documents (both saved verbatim under well-known/). The live
+  tools/list manifest is auth-gated behind an authorization-code + PKCE OAuth flow, so no tool names or
+  inputSchemas are recorded — Mutiny does not publish a tool list anywhere in its help centre either.
+  The capabilities[] block quotes the documented natural-language actions and maps each to the scope
+  whose name covers it; likely_scope is an inference from the published scope vocabulary, not a
+  published binding. No tool names are invented.
+deployment:
+  mode: remote
+  endpoint: https://mcp.mutinyhq.com/mcp
+  auth: oauth
+  verified: probed
+  probe: gated
+  checked: '2026-08-13'
+  note: >-
+    Remote only. Mutiny publishes no stdio package — there is no npx/pip install path, and no MCP
+    package exists under any @mutinyhq npm scope. An agent reaches this server by POSTing to the URL
+    above after an OAuth authorization-code exchange.

@@ -1,6 +1,6 @@
-generated: '2026-07-20'
-method: searched
-source: live probes of /.well-known/* on Mutiny hosts
+generated: '2026-08-13'
+method: probed
+source: live probes of /.well-known/* on every Mutiny host resolved from DNS
 hosts:
 - host: https://www.mutinyhq.com
   documents:
@@ -10,14 +10,63 @@ hosts:
     status: 404
   - path: /.well-known/api-catalog
     status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
 - host: https://app.mutinyhq.com
   documents:
   - path: /.well-known/security.txt
     status: 401
+    note: the hosted application returns 401 for every path; nothing is served anonymously
   - path: /.well-known/openid-configuration
-    status: 404          # request redirects to the app login page; no OIDC discovery document is served
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 401
+- host: https://api.mutinyhq.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  note: >-
+    api.mutinyhq.com resolves and answers GET / with a 2-byte text/plain body, then 404s every
+    documented discovery path. No public REST contract is served from this host.
+- host: https://mcp.mutinyhq.com
+  documents:
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    content_type: application/json
+    file: mutiny-mcp-oauth-authorization-server.json
+    spec: RFC 8414 (OAuth 2.0 Authorization Server Metadata)
+  - path: /.well-known/oauth-protected-resource
+    status: 200
+    content_type: application/json
+    file: mutiny-mcp-oauth-protected-resource.json
+    spec: RFC 9728 (OAuth 2.0 Protected Resource Metadata)
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /.well-known/security.txt
+    status: 404
+hits: 2
 notes: >-
-  No machine-readable /.well-known discovery surface is published. Mutiny is an
-  AI-native GTM assistant with no public REST API / OpenAPI / developer portal at
-  the time of probing; authentication is handled through the hosted app
-  (app.mutinyhq.com). Absence recorded as valid data.
+  Two real machine-readable discovery documents are served, both from the Mutiny MCP host
+  (mcp.mutinyhq.com). They are genuine JSON — RFC 8414 authorization-server metadata and RFC 9728
+  protected-resource metadata — and together they publish the MCP server's OAuth endpoints, PKCE
+  method, dynamic-client-registration endpoint and the five authorization scopes. No security.txt,
+  api-catalog, ai-plugin.json, OpenID Connect discovery document or A2A agent card is served on any
+  Mutiny host. Recorded absences are valid data; only the two 200s above are credited.

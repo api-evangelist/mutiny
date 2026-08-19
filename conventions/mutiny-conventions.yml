@@ -1,0 +1,76 @@
+generated: '2026-08-13'
+method: probed
+source: >-
+  live probes of https://mcp.mutinyhq.com/mcp and its RFC 8414 / RFC 9728 metadata;
+  https://help.mutinyhq.com/articles/5003451538-connecting-mutiny-to-claude
+scope: >-
+  Cross-cutting runtime semantics for Mutiny's only machine-callable surface, the hosted MCP server.
+  There is no REST API, so none of these were derived from an OpenAPI document.
+transport:
+  protocol: Model Context Protocol over streamable HTTP
+  endpoint: https://mcp.mutinyhq.com/mcp
+  method: POST
+  statefulness: stateless
+  evidence: >-
+    GET https://mcp.mutinyhq.com/mcp returns HTTP 405 with JSON-RPC error -32000 "Server-initiated
+    streaming is not supported. Use POST /mcp for stateless requests." /sse returns 404.
+  accept_header: application/json, text/event-stream
+authentication:
+  style: OAuth 2.1 authorization code + PKCE (S256), RFC 7591 dynamic client registration
+  bearer: Authorization header (assumed; the challenge header is not returned — see the gap below)
+  detail: authentication/mutiny-authentication.yml
+  scopes: scopes/mutiny-scopes.yml
+  gap: >-
+    The 401 on an unauthenticated call carries no WWW-Authenticate header, so a client cannot discover
+    the authorization server from the failure. It must know to fetch
+    /.well-known/oauth-protected-resource independently.
+idempotency:
+  supported: false
+  header: null
+  note: >-
+    No idempotency key, request-deduplication rule, or retry-safety guidance is published anywhere. This
+    is a real risk on this surface rather than a paperwork gap: the publish_asset_groups scope pushes an
+    asset to production and returns a live shareable URL, so a retried call after a timeout may publish
+    twice with no documented way to make the operation safe. No Idempotency pointer is emitted in
+    apis.yml.
+pagination:
+  style: undocumented
+  note: >-
+    Library and asset listing capabilities exist ("Show me all library items tagged 'enterprise'"), but
+    no page/cursor/limit convention is published and the tool inputSchemas are auth-gated.
+filtering:
+  supported: true
+  documented_as: filter library items by tag
+  note: Natural-language only; no published parameter names.
+error_envelope:
+  format: JSON-RPC 2.0 error object
+  shape: '{"jsonrpc":"2.0","error":{"code":<int>,"message":"<string>"},"id":<id|null>}'
+  rfc9457: false
+  catalog: errors/mutiny-problem-types.yml
+versioning:
+  style: none-published
+  endpoint_versioning: false
+  note: >-
+    Unversioned endpoint path. MCP protocolVersion is negotiated inside the initialize handshake, which
+    is auth-gated. See lifecycle/mutiny-lifecycle.yml.
+rate_limit_signalling:
+  headers: none
+  note: >-
+    No rate-limit headers are returned or documented. The real constraint is a plan credit quota with no
+    runtime balance signal. See rate-limits/mutiny-rate-limits.yml.
+request_id_tracing:
+  header: none observed
+  note: >-
+    No request-id, correlation-id or trace header was returned on any anonymous response. JSON-RPC `id`
+    is the only correlation token, and the server returns `id: null` on auth failures rather than
+    echoing the request id — so a client cannot correlate a rejected batch member to its request.
+content_type:
+  request: application/json
+  response: application/json; charset=utf-8
+security_headers:
+  observed:
+  - 'content-security-policy: default-src ''self''; connect-src ''self'' https://*.mutinyhq.com'
+  note: The MCP host sets a CSP on API responses; no HSTS header was observed on mcp.mutinyhq.com.
+metadata_fields: undocumented
+expansion: undocumented
+checked: '2026-08-13'
