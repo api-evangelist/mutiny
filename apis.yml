@@ -53,6 +53,18 @@ tags:
 - AI Agents
 - Sales Enablement
 - Account Based Marketing
+- Workflow-Automation
+- MCP
+tags_raw:
+- Company
+- Enterprise
+- Sales
+- Marketing
+- Go-To-Market
+- Artificial Intelligence
+- AI Agents
+- Sales Enablement
+- Account Based Marketing
 - Workflow Automation
 - Model Context Protocol
 apis:
@@ -69,6 +81,11 @@ apis:
   humanURL: https://help.mutinyhq.com/articles/5003451538-connecting-mutiny-to-claude
   baseURL: https://mcp.mutinyhq.com/mcp
   tags:
+  - MCP
+  - AI Agents
+  - Sales Enablement
+  - Content Generation
+  tags_raw:
   - Model Context Protocol
   - AI Agents
   - Sales Enablement
