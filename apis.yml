@@ -64,7 +64,7 @@ tags:
 - AI Agents
 - Sales Enablement
 - Account Based Marketing
-- Workflow-Automation
+- Workflow Automation
 - MCP
 tags_raw:
 - Company
@@ -78,6 +78,7 @@ tags_raw:
 - Account Based Marketing
 - Workflow Automation
 - Model Context Protocol
+- Workflow-Automation
 apis:
 - aid: mutiny:mutiny-mcp-server
   name: Mutiny MCP Server
